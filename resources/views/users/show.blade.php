@@ -12,12 +12,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>DataTables</h1>
+                        <h1>Manajemen User</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">DataTables</li>
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                            <li class="breadcrumb-item active">Manajemen User</li>
                         </ol>
                     </div>
                 </div>
@@ -31,47 +31,55 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">DataTable with minimal features & hover style</h3>
+                                <h4>Data User
+                                    <a href="{{ route('roleuser.create') }}" class="btn btn-success" style="float: right">
+                                        <i class="fas fa-user-plus" aria-hidden="true"></i> Tambah User</a>
+                                </h4>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
+                                @if (Session::has('pesan'))
+                                    <div class="alert alert-success">
+                                        {{ Session::get('pesan') }}
+                                    </div>
+                                @endif
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Browser</th>
-                                            <th>Platform(s)</th>
-                                            <th>Engine version</th>
-                                            <th>CSS grade</th>
+                                            <th>Nama User</th>
+                                            <th>Email</th>
+                                            <th>Level</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Internet
-                                                Explorer 4.0
-                                            </td>
-                                            <td>Win 95+</td>
-                                            <td> 4</td>
-                                            <td>X</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Internet
-                                                Explorer 5.0
-                                            </td>
-                                            <td>Win 95+</td>
-                                            <td>5</td>
-                                            <td>C</td>
-                                        </tr>
+                                        @foreach ($user as $data)
+                                            <tr>
+                                                <td>{{ ++$no }}</td>
+                                                <td>{{ $data->name }}</td>
+                                                <td>{{ $data->email }}</td>
+                                                <td>{{ $data->level }}</td>
+                                                <td>
+                                                    <form action="{{ route('roleuser.destroy', $data->id) }}" method="POST">
+                                                        @csrf <a href="{{ route('roleuser.edit', $data->id) }}"
+                                                            class="btn btn-info"><i
+                                                                class="fas fa-pencil-alt"></i>Edit</a>
+                                                                <button
+                                                                class="btn btn-danger"
+                                                                onclick="return confirm('Anda Yakin ingin menghapus?')"><i
+                                                                    class="fas fa-times"></i>Hapus</button></form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th>No</th>
-                                            <th>Browser</th>
-                                            <th>Platform(s)</th>
-                                            <th>Engine version</th>
-                                            <th>CSS grade</th>
+                                            <th>Nama User</th>
+                                            <th>Email</th>
+                                            <th>Level</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </tfoot>
                                 </table>

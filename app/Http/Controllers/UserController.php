@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\New_;
 
 class UserController extends Controller
 {
@@ -14,7 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('users.show');
+        $no = 0;
+        $user = User::all()->sortByDesc('id');
+        return view('users.show',compact('user','no'));
     }
 
     /**
@@ -24,7 +27,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
@@ -35,7 +38,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name'=>'required',
+            'password'=>'required | confirmed | min:8',
+            'email'=>'required |unique:users'
+        ]);
+        $user = New User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->level = $request->level;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return redirect('index')->with('pesan','Data berhasil disimpan');
     }
 
     /**

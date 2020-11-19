@@ -15,9 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $no = 0;
-        $user = User::all()->sortByDesc('id');
-        return view('users.show',compact('user','no'));
+        return redirect('roleuser/show');
     }
 
     /**
@@ -49,7 +47,7 @@ class UserController extends Controller
         $user->level = $request->level;
         $user->password = bcrypt($request->password);
         $user->save();
-        return redirect('index')->with('pesan','Data berhasil disimpan');
+        return redirect('/roleuser')->with('pesan','Data berhasil disimpan');
     }
 
     /**
@@ -60,7 +58,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $no = 0;
+        $user = User::all()->sortByDesc('id');
+        return view('users.show',compact('user','no'));
     }
 
     /**
@@ -71,7 +71,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+
     }
 
     /**

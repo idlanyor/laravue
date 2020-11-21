@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\New_;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {
@@ -15,7 +15,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return redirect('roleuser/show');
+        $no = 0;
+        $user = User::all()->sortByDesc('id');
+        return view('admin.users.show',compact('user','no'));
     }
 
     /**
@@ -25,7 +27,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('admin.users.create');
     }
 
     /**
@@ -45,9 +47,11 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->level = $request->level;
+        $user->jabatan= $request->jabatan;
         $user->password = bcrypt($request->password);
         $user->save();
-        return redirect('/roleuser')->with('pesan','Data berhasil disimpan');
+        Alert::Success('Sukses','Data berhasil ditambahkan');
+        return redirect('admin/roleuser');
     }
 
     /**
@@ -58,9 +62,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $no = 0;
-        $user = User::all()->sortByDesc('id');
-        return view('users.show',compact('user','no'));
+
     }
 
     /**
@@ -69,9 +71,10 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(User $user,$id)
     {
-
+        $user = User::find($id);
+        return view('admin.users.edit',compact('user'));
     }
 
     /**
@@ -81,9 +84,25 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user,$id)
     {
-        //
+        $user = User::find($id);
+        if ($request->input('password')) {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->level = $request->level;
+            $user->jabatan= $request->jabatan;
+            $user->password = bcrypt($request->password);
+        }
+        else{
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->level = $request->level;
+            $user->jabatan= $request->jabatan;
+        }
+            $user->update();
+            Alert::success('Sukses','Data berhasil di Update');
+            return redirect('admin/roleuser');
     }
 
     /**
@@ -92,8 +111,11 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $user->delete();
+        Alert::success('Sukses','Data berhasil di Hapus');
+        return redirect('admin/roleuser');
     }
 }

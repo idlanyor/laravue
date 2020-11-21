@@ -10,4 +10,8 @@ class LandingController extends Controller
     {
         return view('index');
     }
+    public function single()
+    {
+        return view('single');
+    }
 }
